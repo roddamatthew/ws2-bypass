@@ -93,8 +93,10 @@ int main(int argc, char** argv)
 	printf("[+] Recieved packet successfully.\n");
 	printf("[+] Packet contents are: %s\n", response_buffer);
 
-	if (strncmp(response_buffer, "SuperSecretSecret\n", "32") == 0)
+	if (strncmp(response_buffer, "SuperSecretSecret\n", "32") == 0) {
 		printf("Successfuly triggered sample!\n");
+		send_packet(&hSocket, "Success!\n", sizeof("Success!\n"));
+	}
 	else
 		printf("Incorrect response\n");
 	return 0;
