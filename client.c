@@ -24,6 +24,11 @@ int main(int argc, char** argv)
 	uint8_t dst_ipv4[4];
 	uint16_t sport, dport;
 
+	// Network traffic
+	char *request = "HelloWorld!\n";
+	char *expected_response = "\xde\xad\xbe\xef";
+	char *success = "Success\n!";
+
 	// Parse command line IPs
 	strncpy(src_addr, argv[1], 32);
 	strncpy(dst_addr, argv[3], 32);
@@ -75,7 +80,7 @@ int main(int argc, char** argv)
 	printf("[+] Socket connected successfully.\n");
 	
 	// Send a packet
-	Status = send_packet(&hSocket, "HelloWorld\n", sizeof("HelloWorld\n"));
+	Status = send_packet(&hSocket, request, strlen(request));
 	if (Status < 0) {
 		printf("Error! send_packet failed with 0x%X\n", Status);
 		exit(1);
@@ -93,9 +98,9 @@ int main(int argc, char** argv)
 	printf("[+] Recieved packet successfully.\n");
 	printf("[+] Packet contents are: %s\n", response_buffer);
 
-	if (strncmp(response_buffer, "SuperSecretSecret\n", "32") == 0) {
-		printf("Successfuly triggered sample!\n");
-		send_packet(&hSocket, "Success!\n", sizeof("Success!\n"));
+	if (strncmp(response_buffer, expected_response, strlen(expected_response)) == 0) {
+		printf("%s", success);
+		send_packet(&hSocket, success, strlen(success));
 	}
 	else
 		printf("Incorrect response\n");
